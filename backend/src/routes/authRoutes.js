@@ -63,7 +63,7 @@ router.post('/register', register);
  *       500:
  *         description: "Erro no servidor"
  */
-router.post('/login',authMiddleware, login);
+router.post('/login', login);
 
 /**
  * @swagger

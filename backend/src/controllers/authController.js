@@ -20,7 +20,7 @@ exports.register = async (req, res) => {
         const newUser = await User.create({name,email,password: hashedPassword,role: role || 'user',
         });
 
-        res.status(201).json({ token: generateToken(newUser._id, newUser.role) });
+        res.status(200).json({ message:  newUser.role });
     } catch (err) {
         res.status(500).json({ message: 'Erro ao registrar usuário', error: err.message });
     }
@@ -40,6 +40,18 @@ exports.login = async (req, res) => {
             console.error('Senha inválida');
             return res.status(400).json({ message: 'Credenciais inválidas' });
         }
+        const token = generateToken(user._id, user.role);
+
+        res.status(200).json({
+            message: 'Login bem-sucedido',
+            token,
+            user: {
+                id: user._id,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+            },
+        });
     } catch (err) {
         console.error('Erro no login:', err.message);
         res.status(500).json({ message: 'Erro no servidor' });
