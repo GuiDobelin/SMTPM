@@ -28,3 +28,22 @@ export const LogoutButton = styled.button`
         background-color: #0056b3;
     }
 `;
+export const AdminMenu = styled.div`
+    margin-top: 20px;
+    ul {
+        list-style: none;
+        padding: 0;
+    }
+    li {
+        margin: 10px 0;
+    }
+    button {
+        padding: 10px;
+        font-size: 16px;
+        cursor: pointer;
+        background-color: #007BFF;
+        color: white;
+        border: none;
+        border-radius: 5px;
+    }
+`;

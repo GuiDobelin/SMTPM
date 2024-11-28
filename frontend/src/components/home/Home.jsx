@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Container, Title, LogoutButton } from '../../styles/Home.styles';
+import { Container, Title, LogoutButton, AdminMenu } from '../../styles/Home.styles'; 
 import { useAuth } from '../../hooks/useAuth';
 
 const Home = () => {
-    const { logout } = useAuth();
+    const { user, logout } = useAuth();
+    console.log(user)
     const navigate = useNavigate();
 
     const handleLogout = () => {
@@ -14,8 +15,17 @@ const Home = () => {
 
     return (
         <Container>
-            <Title>Bem-vindo à Home!</Title>
-            <p>Essa é a tela inicial, onde futuramente adicionaremos outras funcionalidades.</p>
+            <Title>Bem-vindo a Home!</Title>
+            <p>Essa e a tela inicial, onde futuramente adicionaremos outras funcionalidades.</p>
+            {user?.role === 'admin' && (
+                <AdminMenu>
+                    <ul>
+                        <li>
+                            <button onClick={() => navigate('/users')}>Mostrar Todos os Usuarios</button>
+                        </li>
+                    </ul>
+                </AdminMenu>
+            )}
             <LogoutButton onClick={handleLogout}>Logout</LogoutButton>
         </Container>
     );

@@ -96,7 +96,7 @@ router.post('/login', login);
  *       500:
  *         description: "Erro ao obter Usuarios"
  */
-router.get('/getAllUsers', authMiddleware, getAllUsers);
+router.get('/users',authMiddleware(), getAllUsers);
 
 /**
  * @swagger
@@ -137,7 +137,7 @@ router.get('/getAllUsers', authMiddleware, getAllUsers);
  *       500:
  *         description: "Erro no servidor"
  */
-router.put('/update/:id', authMiddleware, updateUser);
+router.put('/update/:id', authMiddleware(), updateUser);
 
 /**
  * @swagger
@@ -160,6 +160,6 @@ router.put('/update/:id', authMiddleware, updateUser);
  *       500:
  *         description: "Erro no servidor"
  */
-router.delete('/delete/:id', authMiddleware, deleteUser);
+router.delete('/delete/:id', authMiddleware(), deleteUser);
 
 module.exports = router;

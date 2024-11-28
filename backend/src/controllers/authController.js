@@ -36,9 +36,7 @@ exports.login = async (req, res) => {
             console.error('Usuário não encontrado');
             return res.status(400).json({ message: 'Credenciais inválidas' });
         }
-        console.log(password, user.password)
         const isPasswordValid = await bcrypt.compare(password, user.password);
-        console.log(isPasswordValid)
         if (!isPasswordValid) {
             console.error('Senha inválida');
             return res.status(400).json({ message: 'Credenciais inválidas' });
@@ -64,58 +62,36 @@ exports.login = async (req, res) => {
 exports.getAllUsers = async (req, res) => {
     try {
         const users = await User.find();
-        res.status(200).json({ users });
+        res.status(200).json(users);
     } catch (err) {
-        console.error('Erro ao listar usuários:', err.message);
-        res.status(500).json({ message: 'Erro ao listar usuários' });
+        res.status(500).json({ message: 'Erro ao buscar usuários', error: err.message });
     }
 };
 
 exports.updateUser = async (req, res) => {
     const { id } = req.params;
-    const { name, email, password, role } = req.body;
+    const updates = req.body;
+
     try {
-        const user = await User.findById(id);
+        const user = await User.findByIdAndUpdate(id, updates, { new: true });
         if (!user) {
             return res.status(404).json({ message: 'Usuário não encontrado' });
         }
-
-        if (password) {
-            const hashedPassword = await bcrypt.hash(password, 10);
-            user.password = hashedPassword;
-        }
-        user.name = name || user.name;
-        user.email = email || user.email;
-        user.role = role || user.role;
-
-        await user.save();
-
-        res.status(200).json({
-            message: 'Usuário atualizado com sucesso',
-            user: {
-                id: user._id,
-                name: user.name,
-                email: user.email,
-                role: user.role,
-            },
-        });
+        res.status(200).json({ message: 'Usuário atualizado com sucesso', user });
     } catch (err) {
-        console.error('Erro ao atualizar usuário:', err.message);
-        res.status(500).json({ message: 'Erro ao atualizar usuário' });
+        res.status(500).json({ message: 'Erro ao atualizar usuário', error: err.message });
     }
 };
 
 exports.deleteUser = async (req, res) => {
     const { id } = req.params;
     try {
-        const user = await User.findById(id);
+        const user = await User.findByIdAndDelete(id);
         if (!user) {
             return res.status(404).json({ message: 'Usuário não encontrado' });
         }
-        await user.remove();
-        res.status(200).json({ message: 'Usuário excluído com sucesso' });
+        res.status(200).json({ message: 'Usuário deletado com sucesso' });
     } catch (err) {
-        console.error('Erro ao excluir usuário:', err.message);
-        res.status(500).json({ message: 'Erro ao excluir usuário' });
+        res.status(500).json({ message: 'Erro ao deletar usuário', error: err.message });
     }
 };

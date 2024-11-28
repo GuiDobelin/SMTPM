@@ -1,30 +1,32 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 import { Container, FormWrapper, Title, Input, Button, Message, SwitchMessage } from '../../styles/Login.styles';
-import api from '../../api/api'; // Certifique-se de importar a API corretamente
+import api from '../../api/api'; 
 
 const Login = () => {
     const [formData, setFormData] = useState({ email: '', password: '' });
-    const [message, setMessage] = useState(null); // Para mostrar mensagens de erro ou sucesso
-    const [isError, setIsError] = useState(false); // Para controlar o estado do erro
+    const [message, setMessage] = useState(null); 
+    const [isError, setIsError] = useState(false); 
     const navigate = useNavigate();
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
+
+    const { login } = useAuth();
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
             const response = await api.post('/api/auth/login', formData);
-            console.log('Login realizado com sucesso:', response.data);
-            login(response.data.token); 
-            setMessage('Login realizado com sucesso');
-            setIsError(false);
+            console.log('Resposta da API:', response.data);
+    
+            const { user, token } = response.data;
+            login(user, token);
             navigate('/home');
         } catch (err) {
-            setMessage(err.response?.data.message || 'Erro desconhecido');
-            setIsError(true); 
             console.error('Erro ao fazer login:', err.response?.data.message);
         }
     };
