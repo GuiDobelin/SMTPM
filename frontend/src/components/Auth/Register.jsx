@@ -1,9 +1,21 @@
 import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import api from '../../api/api';
+import {
+    Container,
+    FormWrapper,
+    Title,
+    Input,
+    Button,
+    Message,
+    SwitchMessage
+} from '../../styles/Register.styles';
 
 const Register = () => {
     const [formData, setFormData] = useState({ name: '', email: '', password: '' });
-    const [error, setError] = useState(null);
+    const [message, setMessage] = useState(null);
+    const [isError, setIsError] = useState(false);
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -12,26 +24,51 @@ const Register = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            debugger
             const response = await api.post('/api/auth/register', formData);
-            console.log('Usuário registrado com sucesso:', response.data);
-            alert('Usuário registrado com sucesso:')
+            setMessage('Registro efetuado com sucesso!');
+            setIsError(false);
+
+            setTimeout(() => {
+                navigate('/login');
+            }, 2000);
         } catch (err) {
-            console.error('Erro ao registrar:', err.response?.data.message || err.message);
-            setError(err.response?.data.message || 'Erro desconhecido');
+            setMessage(err.response?.data.message || 'Erro desconhecido');
+            setIsError(true);
         }
     };
 
     return (
-        <div>
-            {error && <p style={{ color: 'red' }}>{error}</p>}
-            <form onSubmit={handleSubmit}>
-                <input name="name" placeholder="Nome" onChange={handleChange} />
-                <input name="email" placeholder="Email" onChange={handleChange} />
-                <input name="password" type="password" placeholder="Senha" onChange={handleChange} />
-                <button type="submit">Registrar</button>
-            </form>
-        </div>
+        <Container>
+            <FormWrapper>
+                <Title>Registrar</Title>
+                {message && <Message error={isError}>{message}</Message>}
+                <form onSubmit={handleSubmit}>
+                    <Input
+                        name="name"
+                        placeholder="Nome"
+                        onChange={handleChange}
+                        value={formData.name}
+                    />
+                    <Input
+                        name="email"
+                        placeholder="Email"
+                        onChange={handleChange}
+                        value={formData.email}
+                    />
+                    <Input
+                        name="password"
+                        type="password"
+                        placeholder="Senha"
+                        onChange={handleChange}
+                        value={formData.password}
+                    />
+                    <Button type="submit">Registrar</Button>
+                </form>
+                <SwitchMessage>
+                    Já tem uma conta? <Link to="/login">Faça login aqui</Link>.
+                </SwitchMessage>
+            </FormWrapper>
+        </Container>
     );
 };
 

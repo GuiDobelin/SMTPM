@@ -27,6 +27,7 @@ exports.register = async (req, res) => {
 };
 
 exports.login = async (req, res) => {
+    debugger
     const { email, password } = req.body;
 
     try {
@@ -35,7 +36,9 @@ exports.login = async (req, res) => {
             console.error('Usuário não encontrado');
             return res.status(400).json({ message: 'Credenciais inválidas' });
         }
+        console.log(password, user.password)
         const isPasswordValid = await bcrypt.compare(password, user.password);
+        console.log(isPasswordValid)
         if (!isPasswordValid) {
             console.error('Senha inválida');
             return res.status(400).json({ message: 'Credenciais inválidas' });

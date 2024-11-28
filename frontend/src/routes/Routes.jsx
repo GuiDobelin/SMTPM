@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import Login from '../components/Auth/Login';
 import Register from '../components/Auth/Register';
-import Dashboard from '../components/Dashboard/Dashboard';
+import Home from '../components/home/Home';
 import { useAuth } from '../hooks/useAuth';
 
 const AppRoutes = () => {
@@ -14,10 +14,10 @@ const AppRoutes = () => {
                 <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />
                 <Route
-                    path="/dashboard"
-                    element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" />}
+                    path="/home"
+                    element={isAuthenticated ? <Home /> : <Navigate to="/login" />}
                 />
-                <Route path="*" element={<Navigate to="/login" />} />
+                <Route path="*" element={<Navigate to={isAuthenticated ? '/home' : '/login'} />} />
             </Routes>
         </Router>
     );
